@@ -1,20 +1,48 @@
+import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/About'
 import Products from './pages/Products'
 import Error from './pages/Error'
 import SharedLayout from './pages/SharedLayout'
+import SingleProduct from './pages/SingleProduct'
+import Dashboard from './pages/Dashboard'
+import Login from './pages/Login'
+import ProtectedRoute from './pages/ProtectedRoute'
+import SharedProductLayout from './pages/SharedProductLayout'
 
 function App() {
+  const [user, setUser] = useState(null)
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<SharedLayout />}>
+          {/*  */}
+          {/* INDEX HOME */}
           <Route index element={<Home />} />
-
+          {/* ABOUT */}
           <Route path='about' element={<About />} />
-          <Route path='products' element={<Products />} />
+          {/*  */}
+          {/* PRODUCTS && PRODUCTS:ID */}
+          <Route path='products' element={<SharedProductLayout />}>
+            <Route index element={<Products />} />
+            <Route path=':productId' element={<SingleProduct />} />
+          </Route>
+          {/*  */}
+          {/* LOGIN && (after)=> DASHBOARD */}
+          <Route path='login' element={<Login setUser={setUser}></Login>} />
+          <Route
+            path='dashboard'
+            element={
+              <ProtectedRoute user={user}>
+                <Dashboard user={user} />
+              </ProtectedRoute>
+            }
+          />
+          {/* ERROR HANDLER */}
           <Route path='*' element={<Error />} />
+          {/*  */}
         </Route>
       </Routes>
     </BrowserRouter>
